@@ -15,26 +15,7 @@ export default function checkInternetConnection(
   timeout: number = 3000,
   url: string = 'https://www.google.com/',
 ): Promise<boolean> {
-  let connectionChecked: Promise<boolean>;
-  if (Platform.OS === 'ios') {
-    connectionChecked = new Promise((resolve: Function) => {
-      const handleFirstConnectivityChangeIOS = (isConnected: boolean) => {
-        NetInfo.isConnected.removeEventListener(
-          'connectionChange',
-          handleFirstConnectivityChangeIOS,
-        );
-        resolve(isConnected);
-      };
-      NetInfo.isConnected.addEventListener(
-        'connectionChange',
-        handleFirstConnectivityChangeIOS,
-      );
-    });
-  } else {
-    connectionChecked = NetInfo.isConnected.fetch();
-  }
-
-  return connectionChecked.then((isConnected: boolean) => {
+  return NetInfo.isConnected.fetch().then((isConnected: boolean) => {
     if (isConnected) {
       return checkInternetAccess(timeout, url);
     }
